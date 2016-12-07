@@ -26,8 +26,8 @@ This sample module contains one small method - filter_contigs.
     # the latter method is running.
     #########################################
     VERSION = "0.0.1"
-    GIT_URL = ""
-    GIT_COMMIT_HASH = ""
+    GIT_URL = "https://github.com/kbaseapps/kb_virsorter.git"
+    GIT_COMMIT_HASH = "e394c2eab1b4dcaa4a9ddc38d0a30fb825e834c8"
     
     #BEGIN_CLASS_HEADER
     # Class variables and functions can be defined in this block

@@ -13,3 +13,5 @@ module-version:
 owners:
     [marcin]
 
+data-version:
+    1.0
