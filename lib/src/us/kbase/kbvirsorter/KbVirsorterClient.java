@@ -17,7 +17,7 @@ import us.kbase.common.service.UnauthorizedException;
  * <p>Original spec-file module name: kb_virsorter</p>
  * <pre>
  * A KBase module: kb_virsorter
- * This sample module contains one small method - filter_contigs.
+ * This module wraps the virsorter pipeline.
  * </pre>
  */
 public class KbVirsorterClient {
@@ -164,20 +164,20 @@ public class KbVirsorterClient {
     }
 
     /**
-     * <p>Original spec-file function name: filter_contigs</p>
+     * <p>Original spec-file function name: run_virsorter</p>
      * <pre>
-     * Filter contigs in a ContigSet by DNA length
+     * Identify viral sequences in microbial reads
      * </pre>
-     * @param   params   instance of type {@link us.kbase.kbvirsorter.FilterContigsParams FilterContigsParams}
-     * @return   instance of type {@link us.kbase.kbvirsorter.FilterContigsResults FilterContigsResults}
+     * @param   params   instance of type {@link us.kbase.kbvirsorter.VirsorterParams VirsorterParams}
+     * @return   instance of type {@link us.kbase.kbvirsorter.VirsorterResults VirsorterResults}
      * @throws IOException if an IO exception occurs
      * @throws JsonClientException if a JSON RPC exception occurs
      */
-    public FilterContigsResults filterContigs(FilterContigsParams params, RpcContext... jsonRpcContext) throws IOException, JsonClientException {
+    public VirsorterResults runVirsorter(VirsorterParams params, RpcContext... jsonRpcContext) throws IOException, JsonClientException {
         List<Object> args = new ArrayList<Object>();
         args.add(params);
-        TypeReference<List<FilterContigsResults>> retType = new TypeReference<List<FilterContigsResults>>() {};
-        List<FilterContigsResults> res = caller.jsonrpcCall("kb_virsorter.filter_contigs", args, retType, true, true, jsonRpcContext, this.serviceVersion);
+        TypeReference<List<VirsorterResults>> retType = new TypeReference<List<VirsorterResults>>() {};
+        List<VirsorterResults> res = caller.jsonrpcCall("kb_virsorter.run_virsorter", args, retType, true, true, jsonRpcContext, this.serviceVersion);
         return res.get(0);
     }
 

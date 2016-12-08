@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 import os
+import shutil
 import json
 import time
 import requests
@@ -14,8 +15,11 @@ except:
 from pprint import pprint
 
 from biokbase.workspace.client import Workspace as workspaceService
+
+
 from kb_virsorter.kb_virsorterImpl import kb_virsorter
 from kb_virsorter.kb_virsorterServer import MethodContext
+from ReadsUtils.ReadsUtilsClient import ReadsUtils
 
 
 class kb_virsorterTest(unittest.TestCase):
@@ -71,41 +75,70 @@ class kb_virsorterTest(unittest.TestCase):
     def getContext(self):
         return self.__class__.ctx
 
-    # NOTE: According to Python unittest naming rules test method names should start from 'test'.
-    def test_filter_contigs_ok(self):
-        obj_name = "contigset.1"
-        contig1 = {'id': '1', 'length': 10, 'md5': 'md5', 'sequence': 'agcttttcat'}
-        contig2 = {'id': '2', 'length': 5, 'md5': 'md5', 'sequence': 'agctt'}
-        contig3 = {'id': '3', 'length': 12, 'md5': 'md5', 'sequence': 'agcttttcatgg'}
-        obj1 = {'contigs': [contig1, contig2, contig3], 'id': 'id', 'md5': 'md5', 'name': 'name', 
-                'source': 'source', 'source_id': 'source_id', 'type': 'type'}
-        self.getWsClient().save_objects({'workspace': self.getWsName(), 'objects':
-            [{'type': 'KBaseGenomes.ContigSet', 'name': obj_name, 'data': obj1}]})
-        ret = self.getImpl().filter_contigs(self.getContext(), {'workspace': self.getWsName(), 
-            'contigset_id': obj_name, 'min_length': '10'})
-        obj2 = self.getWsClient().get_objects([{'ref': self.getWsName()+'/'+obj_name}])[0]['data']
-        self.assertEqual(len(obj2['contigs']), 2)
-        self.assertTrue(len(obj2['contigs'][0]['sequence']) >= 10)
-        self.assertTrue(len(obj2['contigs'][1]['sequence']) >= 10)
-        self.assertEqual(ret[0]['n_initial_contigs'], 3)
-        self.assertEqual(ret[0]['n_contigs_removed'], 1)
-        self.assertEqual(ret[0]['n_contigs_remaining'], 2)
-
-    def test_filter_contigs_err1(self):
-        with self.assertRaises(ValueError) as context:
-            self.getImpl().filter_contigs(self.getContext(), {'workspace': self.getWsName(), 
-                'contigset_id': 'fake', 'min_length': 10})
-        self.assertTrue('Error loading original ContigSet object' in str(context.exception))
-
-    def test_filter_contigs_err2(self):
-        with self.assertRaises(ValueError) as context:
-            self.getImpl().filter_contigs(self.getContext(), {'workspace': self.getWsName(), 
-                'contigset_id': 'fake', 'min_length': '-10'})
-        self.assertTrue('min_length parameter shouldn\'t be negative' in str(context.exception))
-
-    def test_filter_contigs_err3(self):
-        with self.assertRaises(ValueError) as context:
-            self.getImpl().filter_contigs(self.getContext(), {'workspace': self.getWsName(), 
-                'contigset_id': 'fake', 'min_length': 'ten'})
-        self.assertTrue('Cannot parse integer from min_length parameter' in str(context.exception))
+    def test_virsorter_ok(self):
+        #upload_assembly()
+    
+        params = {}
+        #params['assembly_ref'] = self.testobjdata[0]['data'][0]['info'][6] +"/"+ self.testobjdata[0]['data'][0]['info'][0]
+        params['genome_ref'] = '14690/2'
         
+        result = self.getImpl().run_virsorter(self.getContext(), params)
+        print('RESULT run_virsorter:')
+        pprint(result)
+    
+        testresult = [
+            {'blah': 'blah', 'bleh': 'bleh'}]
+    
+        self.assertEqual(sorted(result), sorted(testresult))
+
+    def upload_assembly(self):
+
+        if not self.testobjref:
+            print "upload_assembly start"
+    
+            indata = 'EcoliMG1655.fasta'
+            ftarget = os.path.join(self.scratch, indata)
+            print "ftarget " + ftarget
+            ret = shutil.copy('../test_data/' + indata, ftarget)
+    
+            self.readsUtilClient = ReadsUtils(os.environ['SDK_CALLBACK_URL'])
+    
+            if not self.testwsname:
+                self.testwsname.append(self.create_random_string())
+    
+            print "upload_assembly self.testwsname[0] " + self.testwsname[0]
+    
+            try:
+                ret = self.wsClient.create_workspace({'workspace': self.testwsname[0]})  #test_ws_name
+            except Exception as e:
+                #print "ERROR"
+                #print(type(e))
+                #print(e.args)
+                print(e)
+                pass
+    
+            try:
+                print "attempt upload"
+                print "ftarget " + ftarget
+                ref = self.readsUtilClient.upload_assembly(
+                    {
+                     'wsname': self.testwsname[0],
+                     'name': 'filereads1'})
+        
+                print "upload_assembly"
+                print ref
+                #self.testobjref = []
+                self.testobjref.append(self.testwsname[0] + '/ecoli_assembly')
+                #self.testobjdata = []
+                self.testobjdata.append(self.dfu.get_objects(
+                    {'object_refs': [self.testobjref[0]]}))  #['data'][0]
+        
+                print "self.testobjdata[0]"
+                print self.testobjdata[0]
+    
+            except Exception as e:
+                print e
+                pass
+    
+            print "self.testobjref[0]"
+            print self.testobjref[0]

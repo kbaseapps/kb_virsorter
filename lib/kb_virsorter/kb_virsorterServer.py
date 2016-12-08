@@ -329,10 +329,10 @@ class Application(object):
         self.serverlog.set_log_level(6)
         self.rpc_service = JSONRPCServiceCustom()
         self.method_authentication = dict()
-        self.rpc_service.add(impl_kb_virsorter.filter_contigs,
-                             name='kb_virsorter.filter_contigs',
+        self.rpc_service.add(impl_kb_virsorter.run_virsorter,
+                             name='kb_virsorter.run_virsorter',
                              types=[dict])
-        self.method_authentication['kb_virsorter.filter_contigs'] = 'required'
+        self.method_authentication['kb_virsorter.run_virsorter'] = 'required'
         self.rpc_service.add(impl_kb_virsorter.status,
                              name='kb_virsorter.status',
                              types=[dict])

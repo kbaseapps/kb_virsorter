@@ -27,7 +27,7 @@ kb_virsorter::kb_virsorterClient
 
 
 A KBase module: kb_virsorter
-This sample module contains one small method - filter_contigs.
+This module wraps the virsorter pipeline.
 
 
 =cut
@@ -110,9 +110,9 @@ sub new
 
 
 
-=head2 filter_contigs
+=head2 run_virsorter
 
-  $return = $obj->filter_contigs($params)
+  $return = $obj->run_virsorter($params)
 
 =over 4
 
@@ -121,22 +121,14 @@ sub new
 =begin html
 
 <pre>
-$params is a kb_virsorter.FilterContigsParams
-$return is a kb_virsorter.FilterContigsResults
-FilterContigsParams is a reference to a hash where the following keys are defined:
-	workspace has a value which is a kb_virsorter.workspace_name
-	contigset_id has a value which is a kb_virsorter.contigset_id
-	min_length has a value which is an int
-workspace_name is a string
-contigset_id is a string
-FilterContigsResults is a reference to a hash where the following keys are defined:
+$params is a kb_virsorter.VirsorterParams
+$return is a kb_virsorter.VirsorterResults
+VirsorterParams is a reference to a hash where the following keys are defined:
+	assembly_ref has a value which is a string
+	genome_ref has a value which is a string
+VirsorterResults is a reference to a hash where the following keys are defined:
 	report_name has a value which is a string
 	report_ref has a value which is a string
-	new_contigset_ref has a value which is a kb_virsorter.ws_contigset_id
-	n_initial_contigs has a value which is an int
-	n_contigs_removed has a value which is an int
-	n_contigs_remaining has a value which is an int
-ws_contigset_id is a string
 
 </pre>
 
@@ -144,35 +136,27 @@ ws_contigset_id is a string
 
 =begin text
 
-$params is a kb_virsorter.FilterContigsParams
-$return is a kb_virsorter.FilterContigsResults
-FilterContigsParams is a reference to a hash where the following keys are defined:
-	workspace has a value which is a kb_virsorter.workspace_name
-	contigset_id has a value which is a kb_virsorter.contigset_id
-	min_length has a value which is an int
-workspace_name is a string
-contigset_id is a string
-FilterContigsResults is a reference to a hash where the following keys are defined:
+$params is a kb_virsorter.VirsorterParams
+$return is a kb_virsorter.VirsorterResults
+VirsorterParams is a reference to a hash where the following keys are defined:
+	assembly_ref has a value which is a string
+	genome_ref has a value which is a string
+VirsorterResults is a reference to a hash where the following keys are defined:
 	report_name has a value which is a string
 	report_ref has a value which is a string
-	new_contigset_ref has a value which is a kb_virsorter.ws_contigset_id
-	n_initial_contigs has a value which is an int
-	n_contigs_removed has a value which is an int
-	n_contigs_remaining has a value which is an int
-ws_contigset_id is a string
 
 
 =end text
 
 =item Description
 
-Filter contigs in a ContigSet by DNA length
+Identify viral sequences in microbial reads
 
 =back
 
 =cut
 
- sub filter_contigs
+ sub run_virsorter
 {
     my($self, @args) = @_;
 
@@ -181,7 +165,7 @@ Filter contigs in a ContigSet by DNA length
     if ((my $n = @args) != 1)
     {
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
-							       "Invalid argument count for function filter_contigs (received $n, expecting 1)");
+							       "Invalid argument count for function run_virsorter (received $n, expecting 1)");
     }
     {
 	my($params) = @args;
@@ -189,31 +173,31 @@ Filter contigs in a ContigSet by DNA length
 	my @_bad_arguments;
         (ref($params) eq 'HASH') or push(@_bad_arguments, "Invalid type for argument 1 \"params\" (value was \"$params\")");
         if (@_bad_arguments) {
-	    my $msg = "Invalid arguments passed to filter_contigs:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	    my $msg = "Invalid arguments passed to run_virsorter:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
-								   method_name => 'filter_contigs');
+								   method_name => 'run_virsorter');
 	}
     }
 
     my $url = $self->{url};
     my $result = $self->{client}->call($url, $self->{headers}, {
-	    method => "kb_virsorter.filter_contigs",
+	    method => "kb_virsorter.run_virsorter",
 	    params => \@args,
     });
     if ($result) {
 	if ($result->is_error) {
 	    Bio::KBase::Exceptions::JSONRPC->throw(error => $result->error_message,
 					       code => $result->content->{error}->{code},
-					       method_name => 'filter_contigs',
+					       method_name => 'run_virsorter',
 					       data => $result->content->{error}->{error} # JSON::RPC::ReturnObject only supports JSONRPC 1.1 or 1.O
 					      );
 	} else {
 	    return wantarray ? @{$result->result} : $result->result->[0];
 	}
     } else {
-        Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method filter_contigs",
+        Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method run_virsorter",
 					    status_line => $self->{client}->status_line,
-					    method_name => 'filter_contigs',
+					    method_name => 'run_virsorter',
 				       );
     }
 }
@@ -261,16 +245,16 @@ sub version {
             Bio::KBase::Exceptions::JSONRPC->throw(
                 error => $result->error_message,
                 code => $result->content->{code},
-                method_name => 'filter_contigs',
+                method_name => 'run_virsorter',
             );
         } else {
             return wantarray ? @{$result->result} : $result->result->[0];
         }
     } else {
         Bio::KBase::Exceptions::HTTP->throw(
-            error => "Error invoking method filter_contigs",
+            error => "Error invoking method run_virsorter",
             status_line => $self->{client}->status_line,
-            method_name => 'filter_contigs',
+            method_name => 'run_virsorter',
         );
     }
 }
@@ -307,69 +291,7 @@ sub _validate_version {
 
 
 
-=head2 contigset_id
-
-=over 4
-
-
-
-=item Description
-
-A string representing a ContigSet id.
-
-
-=item Definition
-
-=begin html
-
-<pre>
-a string
-</pre>
-
-=end html
-
-=begin text
-
-a string
-
-=end text
-
-=back
-
-
-
-=head2 workspace_name
-
-=over 4
-
-
-
-=item Description
-
-A string representing a workspace name.
-
-
-=item Definition
-
-=begin html
-
-<pre>
-a string
-</pre>
-
-=end html
-
-=begin text
-
-a string
-
-=end text
-
-=back
-
-
-
-=head2 FilterContigsParams
+=head2 VirsorterParams
 
 =over 4
 
@@ -381,9 +303,8 @@ a string
 
 <pre>
 a reference to a hash where the following keys are defined:
-workspace has a value which is a kb_virsorter.workspace_name
-contigset_id has a value which is a kb_virsorter.contigset_id
-min_length has a value which is an int
+assembly_ref has a value which is a string
+genome_ref has a value which is a string
 
 </pre>
 
@@ -392,9 +313,8 @@ min_length has a value which is an int
 =begin text
 
 a reference to a hash where the following keys are defined:
-workspace has a value which is a kb_virsorter.workspace_name
-contigset_id has a value which is a kb_virsorter.contigset_id
-min_length has a value which is an int
+assembly_ref has a value which is a string
+genome_ref has a value which is a string
 
 
 =end text
@@ -403,39 +323,7 @@ min_length has a value which is an int
 
 
 
-=head2 ws_contigset_id
-
-=over 4
-
-
-
-=item Description
-
-The workspace ID for a ContigSet data object.
-@id ws KBaseGenomes.ContigSet
-
-
-=item Definition
-
-=begin html
-
-<pre>
-a string
-</pre>
-
-=end html
-
-=begin text
-
-a string
-
-=end text
-
-=back
-
-
-
-=head2 FilterContigsResults
+=head2 VirsorterResults
 
 =over 4
 
@@ -449,10 +337,6 @@ a string
 a reference to a hash where the following keys are defined:
 report_name has a value which is a string
 report_ref has a value which is a string
-new_contigset_ref has a value which is a kb_virsorter.ws_contigset_id
-n_initial_contigs has a value which is an int
-n_contigs_removed has a value which is an int
-n_contigs_remaining has a value which is an int
 
 </pre>
 
@@ -463,10 +347,6 @@ n_contigs_remaining has a value which is an int
 a reference to a hash where the following keys are defined:
 report_name has a value which is a string
 report_ref has a value which is a string
-new_contigset_ref has a value which is a kb_virsorter.ws_contigset_id
-n_initial_contigs has a value which is an int
-n_contigs_removed has a value which is an int
-n_contigs_remaining has a value which is an int
 
 
 =end text
