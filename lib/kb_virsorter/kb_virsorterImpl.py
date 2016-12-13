@@ -9,9 +9,13 @@ import shutil
 import traceback
 import uuid
 from pprint import pprint, pformat
+
 from biokbase.workspace.client import Workspace as workspaceService
 from KBaseReport.KBaseReportClient import KBaseReport
 from ReadsUtils.ReadsUtilsClient import ReadsUtils
+from AssemblyUtil.AssemblyUtilClient import AssemblyUtil
+from DataFileUtil.DataFileUtilClient import DataFileUtil
+
 
 #END_HEADER
 
@@ -34,12 +38,79 @@ This module wraps the virsorter pipeline.
     #########################################
     VERSION = "0.0.1"
     GIT_URL = "https://github.com/kbaseapps/kb_virsorter.git"
-    GIT_COMMIT_HASH = "fe6618ba6978f710becbc68bb9b136fa3d857f15"
+    GIT_COMMIT_HASH = "040006781214ff4b9913ee68f857551fc6138bad"
     
     #BEGIN_CLASS_HEADER
     # Class variables and functions can be defined in this block
-    workspaceURL = None
+ 
+ 
+    def do_assembly(self, assembly_ref, file_path, wsClient):
+        try:
+            assembly = wsClient.get_objects2({'objects': [{'ref': assembly_ref}]})['data'][0]
+        except:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+            orig_error = ''.join('    ' + line for line in lines)
+            raise ValueError('Error from workspace:\n' + orig_error)
+
+        fasta_handle_ref = assembly['fasta_handle_ref']
+        param = []
+        param['fasta_handle_ref'] = fasta_handle_ref
+        AssemblyUtil.get_assembly_as_fasta(self, param)
+
+        return [assembly]
+        
+    def do_genome(self, genome_ref, file_path, wsClient):
+        try:
+            genome = wsClient.get_objects2({'objects': [{'ref': genome_ref}]})['data'][0]
+        except:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+            orig_error = ''.join('    ' + line for line in lines)
+            raise ValueError('Error from workspace:\n' + orig_error)
+        
+        print(str(genome))
+        assembly_ref = genome['Assembly_ref']
+        returnVal = self.do_assembly(assembly_ref, file_path, wsClient)
+        
+        return [returnVal]
     
+    
+    
+    #def _download_assembly_from_shock(self, ref, obj_name, handle, file_type):
+    #    params = {'shock_id': handle['id'],
+    #              'unpack': 'uncompress',
+    #              'file_path': os.path.join(self.scratch, handle['id'])
+    #              }
+    #    dfu = DataFileUtil(self.callback_url)
+    #    ret = dfu.shock_to_file(params)
+    #    fn = ret['node_file_name']
+    #    if file_type and not file_type.startswith('.'):
+    #        file_type = '.' + file_type
+    #    ok = False
+    #    for f, n in zip([fn, handle['file_name'], file_type],
+    #                    ['Shock file name',
+    #                     'Handle file name from reads Workspace object',
+    #                     'File type from reads Workspace object']):
+    #        if f:
+    #            if not self._filename_ok(f):
+    #                raise ValueError(
+    #                    ('{} is illegal: {}. Expected FASTQ file. Reads ' +
+    #                     'object {} ({}). Shock node {}')
+    #                    .format(n, f, obj_name, ref, handle['id']))
+    #            ok = True
+    #    # TODO this is untested. You have to try pretty hard to upload a file without a name to Shock. @IgnorePep8 # noqa
+    #    if not ok:
+    #        raise ValueError(
+    #            'Unable to determine file type from Shock or Workspace ' +
+    #            'data. Reads object {} ({}). Shock node {}'
+    #            .format(obj_name, ref, handle['id']))
+    #    if not fn:
+    #        self.log('No filename available from Shock')
+    #    else:
+    #        self.log('Filename from Shock: ' + fn)
+    #    return ret['file_path'], fn
+        
     #END_CLASS_HEADER
 
     # config contains contents of config file in a hash or None if it couldn't
@@ -47,6 +118,7 @@ This module wraps the virsorter pipeline.
     def __init__(self, config):
         #BEGIN_CONSTRUCTOR
         self.workspaceURL = config['workspace-url']
+        self.scratch = config['scratch']
         #END_CONSTRUCTOR
         pass
     
@@ -91,6 +163,8 @@ This module wraps the virsorter pipeline.
                              'returnVal is not type dict as required.')
         # return the results
         return [returnVal]
+    
+    
 
     def status(self, ctx):
         #BEGIN_STATUS

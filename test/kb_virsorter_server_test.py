@@ -5,6 +5,8 @@ import shutil
 import json
 import time
 import requests
+import random
+import string
 
 from os import environ
 try:
@@ -20,7 +22,7 @@ from biokbase.workspace.client import Workspace as workspaceService
 from kb_virsorter.kb_virsorterImpl import kb_virsorter
 from kb_virsorter.kb_virsorterServer import MethodContext
 from ReadsUtils.ReadsUtilsClient import ReadsUtils
-
+from DataFileUtil.DataFileUtilClient import DataFileUtil
 
 class kb_virsorterTest(unittest.TestCase):
 
@@ -51,11 +53,34 @@ class kb_virsorterTest(unittest.TestCase):
         cls.wsClient = workspaceService(cls.wsURL, token=token)
         cls.serviceImpl = kb_virsorter(cls.cfg)
 
+        cls.testobjref = []
+        cls.testobjdata = []
+        cls.testwsname = []
+
     @classmethod
     def tearDownClass(cls):
         if hasattr(cls, 'wsName'):
             cls.wsClient.delete_workspace({'workspace': cls.wsName})
             print('Test workspace was deleted')
+
+        if hasattr(cls, 'testwsname') and len(cls.testwsname) > 0:
+            try:
+                print('Deleting workspace 2 ' + cls.testwsname[0])
+                cls.wsClient.delete_workspace({'workspace': cls.testwsname[0]})
+                print('Test workspace 2 was deleted ' + cls.testwsname[0])
+            except Exception as e:
+                print e
+
+        if hasattr(cls, 'testobjdata'):
+            try:
+                print('Deleting shock data ' + str(len(cls.testobjdata)))
+                print('Deleting shock data ' + str(len(cls.testobjdata[0]['data'][0])))
+                print('Deleting shock data ' + str(cls.testobjdata[0]))
+                node = cls.testobjdata[0]['data'][0]['lib']['file']['id']
+                cls.delete_shock_node(node)
+                print('Test shock data was deleted')
+            except Exception as e:
+                print e
 
     def getWsClient(self):
         return self.__class__.wsClient
@@ -74,13 +99,47 @@ class kb_virsorterTest(unittest.TestCase):
 
     def getContext(self):
         return self.__class__.ctx
+    
+    
+    def write_file(self, filename, content):
+        tmp_dir = self.cfg['scratch']
+        file_path = os.path.join(tmp_dir, filename)
+        with open(file_path, 'w') as fh1:
+            fh1.write(content)
+        return file_path
 
-    def test_virsorter_ok(self):
-        #upload_assembly()
+    def test_aaa_upload_to_shock(self):
+    
+        self.dfUtil = DataFileUtil(os.environ['SDK_CALLBACK_URL'])
+        
+        file_path =  self.write_file('Phage_gene_catalog.tar.gz', 'Test')
+        
+        print "file_path "+ file_path
+        
+        file_path = "../test_data/"
+        ret1 = self.dfUtil.file_to_shock(
+            self.ctx,
+            {'file_path': file_path})[0]
+        
+        print str(ret1)
+        shock_id = ret1['shock_id']
+        
+        print "shock_id "+shock_id
+
+        # test creating a directory on download
+        #file_path2 = os.path.join(self.cfg['scratch'], 'refdata/Phage_gene_catalog.tar.gz')
+        #ret2 = self.impl.shock_to_file(
+        #    self.ctx,
+        #    {'shock_id': shock_id, 'file_path': file_path2})[0]
+        #file_name = ret2['node_file_name']
+        #attribs = ret2['attributes']
+        #print str(attribs)
+
+    def zzz_test_virsorter_ok(self):
+        self.upload_assembly()
     
         params = {}
-        #params['assembly_ref'] = self.testobjdata[0]['data'][0]['info'][6] +"/"+ self.testobjdata[0]['data'][0]['info'][0]
-        params['genome_ref'] = '14690/2'
+        params['assembly_ref'] = self.testobjref
         
         result = self.getImpl().run_virsorter(self.getContext(), params)
         print('RESULT run_virsorter:')
@@ -91,12 +150,18 @@ class kb_virsorterTest(unittest.TestCase):
     
         self.assertEqual(sorted(result), sorted(testresult))
 
+
+    def create_random_string(self):
+        N = 20
+        return ''.join(
+            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(N))
+
     def upload_assembly(self):
 
         if not self.testobjref:
             print "upload_assembly start"
     
-            indata = 'EcoliMG1655.fasta'
+            indata = 'U00096.2.fa'
             ftarget = os.path.join(self.scratch, indata)
             print "ftarget " + ftarget
             ret = shutil.copy('../test_data/' + indata, ftarget)
@@ -123,15 +188,15 @@ class kb_virsorterTest(unittest.TestCase):
                 ref = self.readsUtilClient.upload_assembly(
                     {
                      'wsname': self.testwsname[0],
-                     'name': 'filereads1'})
+                     'name': 'ecolik12'})
         
                 print "upload_assembly"
                 print ref
                 #self.testobjref = []
-                self.testobjref.append(self.testwsname[0] + '/ecoli_assembly')
+                self.testobjref.append(self.testwsname[0] + '/ecolik12')
                 #self.testobjdata = []
                 self.testobjdata.append(self.dfu.get_objects(
-                    {'object_refs': [self.testobjref[0]]}))  #['data'][0]
+                    {'object_refs': [self.testobjref[0]]}))
         
                 print "self.testobjdata[0]"
                 print self.testobjdata[0]
