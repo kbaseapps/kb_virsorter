@@ -38,7 +38,7 @@ This module wraps the virsorter pipeline.
     #########################################
     VERSION = "0.0.1"
     GIT_URL = "https://github.com/kbaseapps/kb_virsorter.git"
-    GIT_COMMIT_HASH = "040006781214ff4b9913ee68f857551fc6138bad"
+    GIT_COMMIT_HASH = "adfa71ac12dba6f6df1d363b682041234723fd4a"
     
     #BEGIN_CLASS_HEADER
     # Class variables and functions can be defined in this block
@@ -163,8 +163,6 @@ This module wraps the virsorter pipeline.
                              'returnVal is not type dict as required.')
         # return the results
         return [returnVal]
-    
-    
 
     def status(self, ctx):
         #BEGIN_STATUS

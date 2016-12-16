@@ -66,9 +66,8 @@ clean:
 	rm -rfv $(LBIN_DIR)
 
 ref-data:
-	cp -a ./data/* /data/
-	if [ -d /data/PFAM_27 ] ; then
-  	    touch /data/__READY__
-  	else
-        echo "Init failed"
-    fi
+	cp -a $(TEST_DIR)/../data_targz/* /data
+	if [ -d /data/PFAM_27.tar.gz ] ; then
+			touch /data/__READY__
+	else
+			echo "Init failed"

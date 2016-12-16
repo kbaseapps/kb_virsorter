@@ -1,3 +1,7 @@
 test_local
 data
+data/PFAM_27
+data/Phage_gene_catalog
+data/Phage_gene_catalog_plus_viromes
+data_targz
 sdk.cfg
