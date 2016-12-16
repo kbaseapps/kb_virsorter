@@ -43,6 +43,7 @@ class kb_virsorterTest(unittest.TestCase):
                              'method_params': []
                              }],
                         'authenticated': 1})
+
         config_file = environ.get('KB_DEPLOYMENT_CONFIG', None)
         cls.cfg = {}
         config = ConfigParser()
@@ -71,16 +72,16 @@ class kb_virsorterTest(unittest.TestCase):
             except Exception as e:
                 print e
 
-        if hasattr(cls, 'testobjdata'):
-            try:
-                print('Deleting shock data ' + str(len(cls.testobjdata)))
-                print('Deleting shock data ' + str(len(cls.testobjdata[0]['data'][0])))
-                print('Deleting shock data ' + str(cls.testobjdata[0]))
-                node = cls.testobjdata[0]['data'][0]['lib']['file']['id']
-                cls.delete_shock_node(node)
-                print('Test shock data was deleted')
-            except Exception as e:
-                print e
+        #if hasattr(cls, 'testobjdata'):
+        #    try:
+        #        print('Deleting shock data ' + str(len(cls.testobjdata)))
+        #        print('Deleting shock data ' + str(len(cls.testobjdata[0]['data'][0])))
+        #        print('Deleting shock data ' + str(cls.testobjdata[0]))
+        #        node = cls.testobjdata[0]['data'][0]['lib']['file']['id']
+        #        cls.delete_shock_node(node)
+        #        print('Test shock data was deleted')
+        #    except Exception as e:
+        #        print e
 
     def getWsClient(self):
         return self.__class__.wsClient
@@ -111,29 +112,18 @@ class kb_virsorterTest(unittest.TestCase):
     def test_aaa_upload_to_shock(self):
     
         self.dfUtil = DataFileUtil(os.environ['SDK_CALLBACK_URL'])
+        #file_path =  self.write_file('Phage_gene_catalog.tar.gz', 'Test')
+                   
+        file_path = "/data/Phage_gene_catalog.tar.gz"# os.path.join(tmp_dir, input_file_name)
+        print "file_path " + file_path
         
-        file_path =  self.write_file('Phage_gene_catalog.tar.gz', 'Test')
-        
-        print "file_path "+ file_path
-        
-        file_path = "../test_data/"
         ret1 = self.dfUtil.file_to_shock(
-            self.ctx,
-            {'file_path': file_path})[0]
+            {'file_path': file_path})
         
         print str(ret1)
         shock_id = ret1['shock_id']
         
         print "shock_id "+shock_id
-
-        # test creating a directory on download
-        #file_path2 = os.path.join(self.cfg['scratch'], 'refdata/Phage_gene_catalog.tar.gz')
-        #ret2 = self.impl.shock_to_file(
-        #    self.ctx,
-        #    {'shock_id': shock_id, 'file_path': file_path2})[0]
-        #file_name = ret2['node_file_name']
-        #attribs = ret2['attributes']
-        #print str(attribs)
 
     def zzz_test_virsorter_ok(self):
         self.upload_assembly()
