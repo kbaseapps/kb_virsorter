@@ -6,6 +6,7 @@ DIR = $(shell pwd)
 LIB_DIR = lib
 SCRIPTS_DIR = scripts
 TEST_DIR = test
+DATA_DIR = data_targz
 LBIN_DIR = bin
 EXECUTABLE_SCRIPT_NAME = run_$(SERVICE_CAPS)_async_job.sh
 STARTUP_SCRIPT_NAME = start_server.sh
@@ -66,8 +67,14 @@ clean:
 	rm -rfv $(LBIN_DIR)
 
 ref-data:
-	cp -a $(TEST_DIR)/../data_targz/* /data
-	if [ -d /data/PFAM_27.tar.gz ] ; then
-			touch /data/__READY__
+	cd $(DATA_DIR)
+	cp -a * /data
+
+	$(eval ORIGSIZE = -v $(shell du -kh ./):/output)
+	$(eval NEWSIZE = -v $(shell du -kh /data):/output)
+
+	ifeq ( ORIGSIZE,  NEWSIZE )
+		touch /data/__READY__
 	else
-			echo "Init failed"
+		echo "Init failed"
+	endif

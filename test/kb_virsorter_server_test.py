@@ -113,17 +113,26 @@ class kb_virsorterTest(unittest.TestCase):
     
         self.dfUtil = DataFileUtil(os.environ['SDK_CALLBACK_URL'])
         #file_path =  self.write_file('Phage_gene_catalog.tar.gz', 'Test')
-                   
-        file_path = "/data/Phage_gene_catalog.tar.gz"# os.path.join(tmp_dir, input_file_name)
-        print "file_path " + file_path
+
+        input_file_name = 'PFAM_27.tar.gz'
+        source_file_path = "/kb/module/work/"+input_file_name# os.path.join(tmp_dir, input_file_name)
+
+        tmp_dir = self.cfg['scratch']
+        target_file_path = os.path.join(tmp_dir, input_file_name)
+
+        print "file_path " + source_file_path+"\t"+target_file_path
+
+        shutil.copy(source_file_path, target_file_path)
+
         
         ret1 = self.dfUtil.file_to_shock(
-            {'file_path': file_path})
+            {'file_path': target_file_path})
         
         print str(ret1)
         shock_id = ret1['shock_id']
         
         print "shock_id "+shock_id
+
 
     def zzz_test_virsorter_ok(self):
         self.upload_assembly()
