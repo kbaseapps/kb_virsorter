@@ -14,7 +14,7 @@ from KBaseReport.KBaseReportClient import KBaseReport
 from ReadsUtils.ReadsUtilsClient import ReadsUtils
 from AssemblyUtil.AssemblyUtilClient import AssemblyUtil
 from DataFileUtil.DataFileUtilClient import DataFileUtil
-from Workspace.WorkspaceClient import Workspace
+from Workspace.WorkspaceClient import Workspace as workspaceService
 
 
 #END_HEADER
