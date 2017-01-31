@@ -10,11 +10,11 @@ import traceback
 import uuid
 from pprint import pprint, pformat
 
-from biokbase.workspace.client import Workspace as workspaceService
 from KBaseReport.KBaseReportClient import KBaseReport
 from ReadsUtils.ReadsUtilsClient import ReadsUtils
 from AssemblyUtil.AssemblyUtilClient import AssemblyUtil
 from DataFileUtil.DataFileUtilClient import DataFileUtil
+from Workspace.WorkspaceClient import Workspace
 
 
 #END_HEADER
@@ -54,11 +54,31 @@ This module wraps the virsorter pipeline.
             raise ValueError('Error from workspace:\n' + orig_error)
 
         fasta_handle_ref = assembly['fasta_handle_ref']
+        print fasta_handle_ref
+
         param = []
         param['fasta_handle_ref'] = fasta_handle_ref
+        #TODO create file here /kb/module/work
+        #TODO set output file name
+        input_fasta_file = ""
         AssemblyUtil.get_assembly_as_fasta(self, param)
 
-        return [assembly]
+
+        #cmdstring = "".join('docker run -v ', '/data:/data', ' -v ', '/kb/module/work:/wdir',
+        #                    ' -w ', '/wdir', ' --rm ', 'discoenv/virsorter:v1.0.3', ' --db ', 2, ' --fna  ',
+        #                    '/wdir/', input_fasta_file)
+
+        cmdstring = "".join("wrapper_phage_contigs_sorter_iPlant.pl ",
+                            "--db 2 ",
+                            "--fna ", "/kb/module/work", input_fasta_file,
+                            "--wdir ", "/kb/module/work")
+
+        cmdProcess = subprocess.Popen(cmdstring, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        stdout, stderr = cmdProcess.communicate()
+        report += "cmdstring: " + cmdstring + " stdout: " + stdout + " stderr: " + stderr
+
+        return [report]
+
         
     def do_genome(self, genome_ref, file_path, wsClient):
         try:
@@ -119,6 +139,10 @@ This module wraps the virsorter pipeline.
         #BEGIN_CONSTRUCTOR
         self.workspaceURL = config['workspace-url']
         self.scratch = config['scratch']
+
+        print "workspaceURL " + self.workspaceURL
+        print "scratch "+self.scratch
+
         #END_CONSTRUCTOR
         pass
     
@@ -154,6 +178,7 @@ This module wraps the virsorter pipeline.
             returnVal = self.do_assembly(assembly_ref, file_path, wsClient)
         elif genome_ref:
             returnVal = self.do_genome(assembly_ref, file_path, wsClient)
+
         
         #END run_virsorter
 

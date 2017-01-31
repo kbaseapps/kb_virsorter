@@ -1,7 +1,10 @@
-test_local
-data
+test_local/
+test_local/workdir
+test_local/workdir/tmp
+data/
 data/PFAM_27
 data/Phage_gene_catalog
 data/Phage_gene_catalog_plus_viromes
-data_targz
+data_targz/
 sdk.cfg
+test_local

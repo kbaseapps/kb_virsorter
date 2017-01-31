@@ -12,6 +12,7 @@ MAINTAINER KBase Developer
 
 RUN mkdir -p /kb/module/dependencies/bin
 
+
 WORKDIR /kb/module/dependencies/bin
 RUN curl -o blast.tar.gz 'ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.30/ncbi-blast-2.2.30+-x64-linux.tar.gz'
 RUN tar -zxvf blast.tar.gz ncbi-blast-2.2.30+/bin/makeprofiledb ncbi-blast-2.2.30+/bin/rpsblast
@@ -48,6 +49,27 @@ RUN cd ./mcl-14-137 && ./configure --prefix=`pwd`../../bin \
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work
 RUN chmod 777 /kb/module
+
+WORKDIR /kb/module/dependencies/bin
+#FROM perl:latest
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install libdb-dev -y
+RUN cpanm --force Capture::Tiny
+RUN cpanm --force Bio::Perl
+RUN cpanm File::Which
+
+WORKDIR /kb/module/dependencies/bin
+RUN git clone https://github.com/simroux/VirSorter
+RUN pwd
+RUN ls
+RUN ls ./VirSorter
+RUN cp ./VirSorter/wrapper_phage_contigs_sorter_iPlant.pl /usr/local/bin/
+RUN cp -r ./VirSorter/Scripts/ /usr/local/bin/
+#RUN cp ./VirSorter/bin/* /usr/local/bin/
+
+ENTRYPOINT ["wrapper_phage_contigs_sorter_iPlant.pl"]
+
+CMD ["-h"]
+
 
 WORKDIR /kb/module
 

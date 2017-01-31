@@ -7,6 +7,7 @@ import time
 import requests
 import random
 import string
+import os.path
 
 from os import environ
 try:
@@ -16,13 +17,12 @@ except:
 
 from pprint import pprint
 
-from biokbase.workspace.client import Workspace as workspaceService
-
-
 from kb_virsorter.kb_virsorterImpl import kb_virsorter
 from kb_virsorter.kb_virsorterServer import MethodContext
 from ReadsUtils.ReadsUtilsClient import ReadsUtils
 from DataFileUtil.DataFileUtilClient import DataFileUtil
+from Workspace.WorkspaceClient import Workspace as workspaceService
+#from biokbase.workspace.client import Workspace as workspaceService
 
 class kb_virsorterTest(unittest.TestCase):
 
@@ -109,12 +109,19 @@ class kb_virsorterTest(unittest.TestCase):
             fh1.write(content)
         return file_path
 
-    def test_aaa_upload_to_shock(self):
-    
+
+    def delete_shock_node(self, node_id):
+        header = {'Authorization': 'Oauth {0}'.format(cls.token)}
+        requests.delete(cls.shockURL + '/node/' + node_id, headers=header,
+                        allow_redirects=True)
+
+    def ztest_aaa_upload_to_shock(self):
+
+        print "upload ref data to shock staging"
         self.dfUtil = DataFileUtil(os.environ['SDK_CALLBACK_URL'])
         #file_path =  self.write_file('Phage_gene_catalog.tar.gz', 'Test')
 
-        input_file_name = 'PFAM_27.tar.gz'
+        input_file_name = 'Phage_gene_catalog_plus_viromes.tar.gz'#'Phage_gene_catalog.tar.gz'#''PFAM_27.tar.gz'
         source_file_path = "/kb/module/work/"+input_file_name# os.path.join(tmp_dir, input_file_name)
 
         tmp_dir = self.cfg['scratch']
@@ -122,9 +129,13 @@ class kb_virsorterTest(unittest.TestCase):
 
         print "file_path " + source_file_path+"\t"+target_file_path
 
+        orig_size = os.path.getsize(source_file_path)
+
         shutil.copy(source_file_path, target_file_path)
 
-        
+        print "Testing "+target_file_path
+        print(os.path.isfile(target_file_path))
+
         ret1 = self.dfUtil.file_to_shock(
             {'file_path': target_file_path})
         
@@ -132,13 +143,30 @@ class kb_virsorterTest(unittest.TestCase):
         shock_id = ret1['shock_id']
         
         print "shock_id "+shock_id
+        file_path2 = os.path.join("/kb/module/work/", 'test.tar.gz')
+
+        #ret2 = self.dfUtil.shock_to_file(
+        #    {'shock_id': shock_id, 'file_path': file_path2})[0]
+        ret2 = self.dfUtil.shock_to_file(
+            {'shock_id': shock_id, 'file_path': file_path2})
+
+        print(ret2)
+
+        file_name = ret2['node_file_name']
+        attribs = ret2['attributes']
+        self.assertEqual(file_name, 'Phage_gene_catalog_plus_viromes.tar.gz')
+        self.assertEqual(ret2['file_path'], file_path2)
+        self.assertEqual(ret2['size'], orig_size)
+        self.assertIsNone(attribs)
+
+        #self.delete_shock_node(shock_id)
 
 
-    def zzz_test_virsorter_ok(self):
-        self.upload_assembly()
+    def test_virsorter_ok(self):
+        #self.upload_assembly()
     
         params = {}
-        params['assembly_ref'] = self.testobjref
+        params['assembly_ref'] = '16589/2/1'#self.testobjref
         
         result = self.getImpl().run_virsorter(self.getContext(), params)
         print('RESULT run_virsorter:')
@@ -161,7 +189,7 @@ class kb_virsorterTest(unittest.TestCase):
             print "upload_assembly start"
     
             indata = 'U00096.2.fa'
-            ftarget = os.path.join(self.scratch, indata)
+            ftarget = os.path.join(self.cfg['scratch'], indata)#self.scratch, indata)
             print "ftarget " + ftarget
             ret = shutil.copy('../test_data/' + indata, ftarget)
     

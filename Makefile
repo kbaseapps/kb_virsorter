@@ -67,14 +67,14 @@ clean:
 	rm -rfv $(LBIN_DIR)
 
 ref-data:
-	cd $(DATA_DIR)
-	cp -a * /data
-
-	$(eval ORIGSIZE = -v $(shell du -kh ./):/output)
-	$(eval NEWSIZE = -v $(shell du -kh /data):/output)
-
-	ifeq ( ORIGSIZE,  NEWSIZE )
-		touch /data/__READY__
-	else
-		echo "Init failed"
-	endif
+	pwd
+	mkdir /kb/module/virsorter_run
+	curl -X GET https://ci.kbase.us/services/shock-api/node/ab30145e-082a-4844-a2dc-bfb744b5b180?download_raw > /data/PFAM_27.tar.gz
+	tar -zxvf /data/PFAM_27.tar.gz -C /data
+	curl -X GET https://ci.kbase.us/services/shock-api/node/b815a972-6314-4d48-9e32-ada8a575d004?download_raw > /data/Phage_gene_catalog.tar.gz
+	tar -zxvf /data/Phage_gene_catalog.tar.gz -C /data
+	curl -X GET https://ci.kbase.us/services/shock-api/node/c188e7a7-783c-42f3-9d6f-bbd32ef60e3d?download_raw > /data/Phage_gene_catalog_plus_viromes.tar.gz
+	tar -zxvf /data/Phage_gene_catalog_plus_viromes.tar.gz -C /data
+	ls -lh /data
+	echo "Printed ls -lh /data"
+	touch /data/__READY__

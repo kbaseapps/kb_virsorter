@@ -2,7 +2,7 @@ module-name:
     kb_virsorter
 
 module-description:
-    A KBase module
+    KBase app wrapping the VirSorter pipeline
 
 service-language:
     python
