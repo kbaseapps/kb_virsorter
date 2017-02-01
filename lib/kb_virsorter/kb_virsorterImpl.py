@@ -62,17 +62,20 @@ This module wraps the virsorter pipeline.
         #print "fasta_handle_ref "+fasta_handle_ref
         #print type(fasta_handle_ref)
 
+        # fasta_handle_ref
         param = dict()
+        param['ref'] = assembly_ref
 
-        param['ref'] = assembly_ref#fasta_handle_ref
+
         #TODO create file here /kb/module/work
         #TODO set output file name
-        au = AssemblyUtil()#config['sdk_callback_url'])#os.environ['SDK_CALLBACK_URL'])
+        print "SDK_CALLBACK_URL "+os.environ['SDK_CALLBACK_URL']
+        au = AssemblyUtil(os.environ['SDK_CALLBACK_URL'])
         input_fasta_file = au.get_assembly_as_fasta(param)
 
 
         #cmdstring = "".join('docker run -v ', '/data:/data', ' -v ', '/kb/module/work:/wdir',
-        #                    ' -w ', '/wdir', ' --rm ', 'discoenv/virsorter:v1.0.3', ' --db ', 2, ' --fna  ',
+        #                    ' -w ', '/wdir', ' --rm ', 'discoenv/virsorter:v1.0.3', ' --db ß', 2, ' --fna  ',
         #                    '/wdir/', input_fasta_file)
 
         cmdstring = "".join("wrapper_phage_contigs_sorter_iPlant.pl ",
