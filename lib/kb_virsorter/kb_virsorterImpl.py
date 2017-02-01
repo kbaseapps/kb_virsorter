@@ -45,23 +45,30 @@ This module wraps the virsorter pipeline.
  
  
     def do_assembly(self, assembly_ref, file_path, wsClient):
-        try:
-            assembly = wsClient.get_objects2({'objects': [{'ref': assembly_ref}]})['data'][0]
-        except:
-            exc_type, exc_value, exc_traceback = sys.exc_info()
-            lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
-            orig_error = ''.join('    ' + line for line in lines)
-            raise ValueError('Error from workspace:\n' + orig_error)
+        #try:
+        #    assembly = wsClient.get_objects2({'objects': [{'ref': assembly_ref}]})
+        #except:
+        #    exc_type, exc_value, exc_traceback = sys.exc_info()
+        #    lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+        #    orig_error = ''.join('    ' + line for line in lines)
+        #    raise ValueError('Error from workspace:\n' + orig_error)
 
-        fasta_handle_ref = assembly['fasta_handle_ref']
-        print fasta_handle_ref
+        #print assembly#[200:]
+        #print assembly['data']
+        #print assembly['data'][0]
+        #assembly['data'][0]['data']
 
-        param = []
-        param['fasta_handle_ref'] = fasta_handle_ref
+        #fasta_handle_ref = assembly['data'][0]['data']['fasta_handle_ref']
+        #print "fasta_handle_ref "+fasta_handle_ref
+        #print type(fasta_handle_ref)
+
+        param = dict()
+
+        param['ref'] = assembly_ref#fasta_handle_ref
         #TODO create file here /kb/module/work
         #TODO set output file name
-        input_fasta_file = ""
-        AssemblyUtil.get_assembly_as_fasta(self, param)
+        au = AssemblyUtil()#config['sdk_callback_url'])#os.environ['SDK_CALLBACK_URL'])
+        input_fasta_file = au.get_assembly_as_fasta(param)
 
 
         #cmdstring = "".join('docker run -v ', '/data:/data', ' -v ', '/kb/module/work:/wdir',
@@ -73,7 +80,9 @@ This module wraps the virsorter pipeline.
                             "--fna ", "/kb/module/work", input_fasta_file,
                             "--wdir ", "/kb/module/work")
 
+        print "Executing"
         cmdProcess = subprocess.Popen(cmdstring, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        print "Done"
         stdout, stderr = cmdProcess.communicate()
         report += "cmdstring: " + cmdstring + " stdout: " + stdout + " stderr: " + stderr
 
