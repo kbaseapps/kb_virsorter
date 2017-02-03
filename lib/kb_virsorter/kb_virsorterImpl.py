@@ -30,16 +30,16 @@ class kb_virsorter:
 This module wraps the virsorter pipeline.
     '''
 
-    ######## WARNING FOR GEVENT USERS #######
+    ######## WARNING FOR GEVENT USERS ####### noqa
     # Since asynchronous IO can lead to methods - even the same method -
     # interrupting each other, you must be *very* careful when using global
     # state. A method could easily clobber the state set by another while
     # the latter method is running.
-    #########################################
+    ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "https://github.com/kbaseapps/kb_virsorter.git"
-    GIT_COMMIT_HASH = "adfa71ac12dba6f6df1d363b682041234723fd4a"
-    
+    GIT_COMMIT_HASH = "5d8dbe87bf30519e8637d63d33be2b66fa257e34"
+
     #BEGIN_CLASS_HEADER
     # Class variables and functions can be defined in this block
  
@@ -71,22 +71,36 @@ This module wraps the virsorter pipeline.
         #TODO set output file name
         print "SDK_CALLBACK_URL "+os.environ['SDK_CALLBACK_URL']
         au = AssemblyUtil(os.environ['SDK_CALLBACK_URL'])
-        input_fasta_file = au.get_assembly_as_fasta(param)
+        assembly_input_ref = "16589/2/1"
+        filename = "test.fasta"
+        obj_name = "EcoliMG1655.f"
+        wsname = "example_assembly"
+        input_fasta_file = au.get_assembly_as_fasta({'ref': assembly_input_ref})
+
+            #{'file': {'path': filename},
+            #                                                  'workspace_name': wsname,
+            #                                                  'assembly_name': obj_name
+            #                                                  })#(param)
 
 
         #cmdstring = "".join('docker run -v ', '/data:/data', ' -v ', '/kb/module/work:/wdir',
         #                    ' -w ', '/wdir', ' --rm ', 'discoenv/virsorter:v1.0.3', ' --db ß', 2, ' --fna  ',
         #                    '/wdir/', input_fasta_file)
 
-        cmdstring = "".join("wrapper_phage_contigs_sorter_iPlant.pl ",
-                            "--db 2 ",
-                            "--fna ", "/kb/module/work", input_fasta_file,
-                            "--wdir ", "/kb/module/work")
+        print "input_fasta_file "+ str(input_fasta_file['path'])
+        args = ["wrapper_phage_contigs_sorter_iPlant.pl ", "--db 2 ","--fna ",input_fasta_file['path']," --wdir ","/kb/module/work"]
+
+        print type(args)
+        print args
+
+        cmdstring = "".join(args)
 
         print "Executing"
         cmdProcess = subprocess.Popen(cmdstring, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-        print "Done"
+        print "Done "+str(cmdProcess)
         stdout, stderr = cmdProcess.communicate()
+        print " stdout: " + stdout
+        print " stderr: " + stderr
         report += "cmdstring: " + cmdstring + " stdout: " + stdout + " stderr: " + stderr
 
         return [report]
@@ -157,7 +171,7 @@ This module wraps the virsorter pipeline.
 
         #END_CONSTRUCTOR
         pass
-    
+
 
     def run_virsorter(self, ctx, params):
         """
@@ -200,7 +214,6 @@ This module wraps the virsorter pipeline.
                              'returnVal is not type dict as required.')
         # return the results
         return [returnVal]
-
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK", 'message': "", 'version': self.VERSION,
