@@ -17,10 +17,8 @@ WORKDIR /kb/module/dependencies/bin
 RUN curl -o blast.tar.gz 'ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.30/ncbi-blast-2.2.30+-x64-linux.tar.gz'
 RUN tar -zxvf blast.tar.gz ncbi-blast-2.2.30+/bin/blastp
 RUN ls ./ncbi-blast-2.2.30+/bin/
-#RUN mv ./ncbi-blast-2.2.30+/bin/makeprofiledb ../bin/makeprofiledb.linux
-#RUN mv ./ncbi-blast-2.2.30+/bin/rpsblast ../bin/rpsblast.linux
 RUN cp ./ncbi-blast-2.2.30+/bin/blastp /usr/local/bin
-#../bin/
+
 
 WORKDIR /kb/module/dependencies/bin
 RUN curl -o hmmer.tar.gz 'http://eddylab.org/software/hmmer3/3.1b1/hmmer-3.1b1-linux-intel-x86_64.tar.gz'
@@ -58,7 +56,7 @@ RUN cpanm --force Capture::Tiny
 RUN cpanm --force Bio::Perl
 RUN cpanm File::Which
 
-#WORKDIR /kb/module/dependencies/bin
+WORKDIR /kb/module/dependencies/bin
 RUN git clone https://github.com/simroux/VirSorter
 RUN pwd
 RUN ls
