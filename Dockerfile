@@ -41,13 +41,6 @@ RUN tar -zxvf mcl-14-137.tar.gz
 RUN cd ./mcl-14-137 && ./configure --prefix=`pwd`../../bin \
 	&& make \
 	&& make install
-COPY ./ /kb/module
-RUN mkdir -p /kb/module/work
-RUN chmod 777 /kb/module
-
-#RUN echo "WARNING"
-#RUN echo "WARNING"
-#RUN echo "PERL AND VIRSORTER INSTALL DISABLED"
 
 WORKDIR /kb/module/dependencies/bin
 FROM perl:latest
@@ -65,9 +58,15 @@ RUN cp ./VirSorter/wrapper_phage_contigs_sorter_iPlant.pl /usr/local/bin/
 RUN cp -r ./VirSorter/Scripts/ /usr/local/bin/
 #RUN cp ./VirSorter/bin/* /usr/local/bin/
 
-ENTRYPOINT ["wrapper_phage_contigs_sorter_iPlant.pl"]
 
-CMD ["-h"]
+#WORKDIR /kb/module/dependencies/bin
+#COPY ./ /kb/module
+RUN mkdir -p /kb/module/work
+RUN chmod 777 /kb/module
+
+
+#ENTRYPOINT ["wrapper_phage_contigs_sorter_iPlant.pl"]
+#CMD ["-h"]
 
 
 WORKDIR /kb/module

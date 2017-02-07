@@ -38,7 +38,7 @@ This module wraps the virsorter pipeline.
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "https://github.com/kbaseapps/kb_virsorter.git"
-    GIT_COMMIT_HASH = "5d8dbe87bf30519e8637d63d33be2b66fa257e34"
+    GIT_COMMIT_HASH = "81dd40f07280e9821086a275f9fa1ee3fb97d294"
 
     #BEGIN_CLASS_HEADER
     # Class variables and functions can be defined in this block
