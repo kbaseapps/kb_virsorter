@@ -62,7 +62,8 @@ RUN cp -r ./VirSorter/Scripts/ /usr/local/bin/
 WORKDIR /kb/module/dependencies/bin
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work
-RUN chmod 777 /kb/module
+RUN chmod -R a+rw /kb/module
+#RUN chmod 777 /kb/module
 
 
 #ENTRYPOINT ["wrapper_phage_contigs_sorter_iPlant.pl"]
