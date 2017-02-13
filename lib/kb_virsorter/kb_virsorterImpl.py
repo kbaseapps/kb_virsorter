@@ -44,7 +44,7 @@ This module wraps the virsorter pipeline.
     # Class variables and functions can be defined in this block
  
  
-    def do_assembly(self, assembly_ref, file_path, wsClient):
+    def do_assembly(self, assemblyRef, file_path, wsName, wsClient):
         #try:
         #    assembly = wsClient.get_objects2({'objects': [{'ref': assembly_ref}]})
         #except:
@@ -63,8 +63,8 @@ This module wraps the virsorter pipeline.
         #print type(fasta_handle_ref)
 
         # fasta_handle_ref
-        param = dict()
-        param['ref'] = assembly_ref
+        #param = dict()
+        #param['ref'] = assemblyRef
 
 
         #TODO create file here /kb/module/work
@@ -75,17 +75,7 @@ This module wraps the virsorter pipeline.
         filename = "test.fasta"
         obj_name = "EcoliMG1655.f"
         wsname = "example_assembly"
-        input_fasta_file = au.get_assembly_as_fasta({'ref': assembly_input_ref})
-
-            #{'file': {'path': filename},
-            #                                                  'workspace_name': wsname,
-            #                                                  'assembly_name': obj_name
-            #                                                  })#(param)
-
-
-        #cmdstring = "".join('docker run -v ', '/data:/data', ' -v ', '/kb/module/work:/wdir',
-        #                    ' -w ', '/wdir', ' --rm ', 'discoenv/virsorter:v1.0.3', ' --db ß', 2, ' --fna  ',
-        #                    '/wdir/', input_fasta_file)
+        input_fasta_file = au.get_assembly_as_fasta({'ref': assembly_input_ref})#param)#
 
         print "input_fasta_file "+ str(input_fasta_file['path'])
         args = ["wrapper_phage_contigs_sorter_iPlant.pl ", "--db 2 ","--fna ",input_fasta_file['path']," --wdir ","/kb/module/work"]
@@ -101,14 +91,74 @@ This module wraps the virsorter pipeline.
         stdout, stderr = cmdProcess.communicate()
         print " stdout: " + stdout
         print " stderr: " + stderr
-        report += "cmdstring: " + cmdstring + " stdout: " + stdout + " stderr: " + stderr
 
-        return [report]
+        #return [report]
+
+        # Step 5 - Build a Report and return
+        reportObj = {
+            'objects_created': [],
+            'text_message': stdout
+        }
+        # 'objects_created': [{'ref': new_assembly, 'description': 'Filtered contigs'}],
+
+        #report_info = report.create({'report': reportObj, 'workspace_name': wsName})
+
+        #reportObj = {
+        #    'objects_created': [{'ref': new_assembly, 'description': 'Filtered contigs'}],
+        #    'text_message': 'Filtered Assembly to ' + str(n_remaining) + ' contigs out of ' + str(n_total)
+        #}
+        #report = KBaseReport(self.callback_url)
+        #report_info = report.create({'report': reportObj, 'workspace_name': params['workspace_name']})
+
+
+        # contruct the output to send back
+        #output = {'report_name': report_info['name'],
+        #          'report_ref': report_info['ref']
+        #          }
+        #print('returning:' + pformat(output))
+
+        print('Saving report')
+        kbr = KBaseReport(self.callback_url, service_ver='dev')
+        report = ''
+        report += "cmdstring: " + str(cmdstring) + " stdout: " + str(stdout) + " stderr: " + str(stderr)
+
+        report_data = {'message': report,
+             'objects_created': None,
+             'direct_html_link_index': None,
+             'html_links': None,
+             'report_object_name': 'kb_virsorter_' + str(uuid.uuid4()),
+             'workspace_name': wsName
+             }
+
+        print "report_data"
+        print str(report_data)
+        report_info = kbr.create_extended_report(report_data
+            )
+
+        # 'objects_created': [{'ref': assembly_ref, 'description': 'Assembled contigs'}],
+        # 'html_links': [{'shock_id': quastret['shock_id'],
+        #                     'name': 'report.html',
+        #                     'label': 'QUAST report'}
+        #                    ],
+
+        reportName = report_info['name']
+        reportRef = report_info['ref']
+        return reportName, reportRef
+
+
+        # END filter_contigs
+
+        # At some point might do deeper type checking...
+        #if not isinstance(output, dict):
+        #    raise ValueError('Method filter_contigs return value ' +
+        #                     'output is not type dict as required.')
+        # return the results
+        #return [output]
 
         
-    def do_genome(self, genome_ref, file_path, wsClient):
+    def do_genome(self, genomeRef, file_path, wsClient):
         try:
-            genome = wsClient.get_objects2({'objects': [{'ref': genome_ref}]})['data'][0]
+            genome = wsClient.get_objects2({'objects': [{'ref': genomeRef}]})['data'][0]
         except:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
@@ -164,9 +214,11 @@ This module wraps the virsorter pipeline.
     def __init__(self, config):
         #BEGIN_CONSTRUCTOR
         self.workspaceURL = config['workspace-url']
+        self.callback_url = os.environ['SDK_CALLBACK_URL']
         self.scratch = config['scratch']
 
         print "workspaceURL " + self.workspaceURL
+        print "callback_url " + self.callback_url
         print "scratch "+self.scratch
 
         #END_CONSTRUCTOR
@@ -189,31 +241,49 @@ This module wraps the virsorter pipeline.
         if 'assembly_ref' not in params and 'genome_ref' not in params:
             raise ValueError('Parameter assembly_ref or genome_ref is not set in input arguments')
         elif 'assembly_ref' in params:
-            assembly_ref = params['assembly_ref']
+            assemblyRef = params['assembly_ref']
         elif 'genome_ref' in params:
-            genome_ref = params['genome_ref']
-        
+            genomeRef = params['genome_ref']
+
+        if 'ws_name' not in params:
+            raise ValueError('Parameter ws_name is not set in input arguments')
+        else:
+            wsName = params['ws_name']
+
         token = ctx['token']
         wsClient = workspaceService(self.workspaceURL, token=token)
-        headers = {'Authorization': 'OAuth ' + token}
+        #headers = {'Authorization': 'OAuth ' + token}
         uuid_string = str(uuid.uuid4())
         file_path = self.scratch + "/" + uuid_string
         os.mkdir(file_path)
         
-        if assembly_ref:
-            returnVal = self.do_assembly(assembly_ref, file_path, wsClient)
-        elif genome_ref:
-            returnVal = self.do_genome(assembly_ref, file_path, wsClient)
+        if assemblyRef:
+            report_name, report_ref = self.do_assembly(assemblyRef, file_path, wsName, wsClient)
+        elif genomeRef:
+            report_name, report_ref = self.do_genome(genomeRef, file_path, wsName, wsClient)
 
-        
+        output = {'report_name': report_name,
+                  'report_ref': report_ref
+                  }
+        # END run_kb_virsorter
+
+        # At some point might do deeper type checking...
+        if not isinstance(output, dict):
+            raise ValueError('Method run_SPAdes return value ' +
+                             'output is not type dict as required.')
+        # return the results
+        return [output]
+
         #END run_virsorter
 
         # At some point might do deeper type checking...
-        if not isinstance(returnVal, dict):
-            raise ValueError('Method run_virsorter return value ' +
-                             'returnVal is not type dict as required.')
+        #if not isinstance(returnVal, dict):
+        #    raise ValueError('Method run_virsorter return value ' +
+        #                     'returnVal is not type dict as required.')
         # return the results
-        return [returnVal]
+        #return [returnVal]
+
+
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK", 'message': "", 'version': self.VERSION,

@@ -17,7 +17,7 @@ WORKDIR /kb/module/dependencies/bin
 RUN curl -o blast.tar.gz 'ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.30/ncbi-blast-2.2.30+-x64-linux.tar.gz'
 RUN tar -zxvf blast.tar.gz ncbi-blast-2.2.30+/bin/blastp
 #RUN ls ./ncbi-blast-2.2.30+/bin/
-#RUN cp ./ncbi-blast-2.2.30+/bin/blastp /usr/local/bin
+RUN cp ./ncbi-blast-2.2.30+/bin/blastp /usr/local/bin
 
 
 WORKDIR /kb/module/dependencies/bin
@@ -43,7 +43,7 @@ RUN cd ./mcl-14-137 && ./configure --prefix=`pwd`../../bin \
 	&& make install
 
 WORKDIR /kb/module/dependencies/bin
-FROM perl:latest
+#FROM perl:latest
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install libdb-dev -y
 RUN cpanm --force Capture::Tiny
 RUN cpanm --force Bio::Perl

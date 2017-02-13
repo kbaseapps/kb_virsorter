@@ -162,12 +162,33 @@ class kb_virsorterTest(unittest.TestCase):
         #self.delete_shock_node(shock_id)
 
 
+    def create_random_string(self):
+        N = 20
+        return ''.join(
+            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(N))
+
     def test_virsorter_ok(self):
         #self.upload_assembly()
-    
+
+
+        if not self.testwsname:
+            self.testwsname.append(self.create_random_string())
+
+        print "upload_reads self.testwsname[0] " + self.testwsname[0]
+
+        try:
+            ret = self.wsClient.create_workspace({'workspace': self.testwsname[0]})  # test_ws_name
+        except Exception as e:
+            # print "ERROR"
+            # print(type(e))
+            # print(e.args)
+            print(e)
+            pass
+
         params = {}
         params['assembly_ref'] = "17182/2/1"#'16589/2/1'#self.testobjref
-        
+        params['ws_name'] = self.testwsname
+
         result = self.getImpl().run_virsorter(self.getContext(), params)
         print('RESULT run_virsorter:')
         pprint(result)
@@ -177,11 +198,6 @@ class kb_virsorterTest(unittest.TestCase):
     
         self.assertEqual(sorted(result), sorted(testresult))
 
-
-    def create_random_string(self):
-        N = 20
-        return ''.join(
-            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(N))
 
     def upload_assembly(self):
 
