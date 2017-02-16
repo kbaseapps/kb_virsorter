@@ -185,9 +185,10 @@ class kb_virsorterTest(unittest.TestCase):
             print(e)
             pass
 
+        print "self.testwsname "+ str(self.testwsname)
         params = {}
-        params['assembly_ref'] = "17182/2/1"#'16589/2/1'#self.testobjref
-        params['ws_name'] = self.testwsname
+        params['assembly_ref'] = "16589/2/1"#""#'16589/2/1'#self.testobjref
+        params['ws_name'] = self.testwsname[0]
 
         result = self.getImpl().run_virsorter(self.getContext(), params)
         print('RESULT run_virsorter:')

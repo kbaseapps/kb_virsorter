@@ -75,6 +75,11 @@ ref-data:
 	tar -zxvf /data/Phage_gene_catalog.tar.gz -C /data
 	curl -X GET https://ci.kbase.us/services/shock-api/node/c188e7a7-783c-42f3-9d6f-bbd32ef60e3d?download_raw > /data/Phage_gene_catalog_plus_viromes.tar.gz
 	tar -zxvf /data/Phage_gene_catalog_plus_viromes.tar.gz -C /data
+
+	curl -H "Authorization: OAuth $KB_AUTH_TOKEN" -X GET https://ci.kbase.us/services/shock-api/node/b38ff5b0-6fcc-40e1-b2d0-c5af1407a868?download_raw > /data/Generic_ref_file.refs
+	curl -H "Authorization: OAuth $KB_AUTH_TOKEN" -X GET https://ci.kbase.us/services/shock-api/node/555a94de-593e-4d88-8fcf-d07b4e0d98cd?download_raw > /data/VirSorter_Readme.txt
+	curl -H "Authorization: OAuth $KB_AUTH_TOKEN" -X GET https://ci.kbase.us/services/shock-api/node/6ddcad27-0218-4d28-b467-79b55cd6c96e?download_raw > /data/VirSorter_Readme_viromes.txt
+
 	ls -lh /data
 	echo "Printed ls -lh /data"
 	touch /data/__READY__

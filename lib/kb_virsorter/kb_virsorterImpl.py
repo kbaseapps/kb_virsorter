@@ -62,11 +62,6 @@ This module wraps the virsorter pipeline.
         #print "fasta_handle_ref "+fasta_handle_ref
         #print type(fasta_handle_ref)
 
-        # fasta_handle_ref
-        #param = dict()
-        #param['ref'] = assemblyRef
-
-
         #TODO create file here /kb/module/work
         #TODO set output file name
         print "SDK_CALLBACK_URL "+os.environ['SDK_CALLBACK_URL']
@@ -75,13 +70,20 @@ This module wraps the virsorter pipeline.
         filename = "test.fasta"
         obj_name = "EcoliMG1655.f"
         wsname = "example_assembly"
-        input_fasta_file = au.get_assembly_as_fasta({'ref': assembly_input_ref})#param)#
+
+        param = dict()
+        param['ref'] = assemblyRef#assembly_input_ref
+
+        input_fasta_file = au.get_assembly_as_fasta(param)#{'ref': assembly_input_ref})
+
 
         print "input_fasta_file "+ str(input_fasta_file['path'])
-        args = ["wrapper_phage_contigs_sorter_iPlant.pl ", "--db 2 ","--fna ",input_fasta_file['path']," --wdir ","/kb/module/work"]
+        args = ["wrapper_phage_contigs_sorter_iPlant.pl ", "--db 2 ","--fna ", str(input_fasta_file['path'])," --wdir ","/kb/module/work"]
+
+
 
         print type(args)
-        print args
+        print str(args)
 
         cmdstring = "".join(args)
 
@@ -121,6 +123,8 @@ This module wraps the virsorter pipeline.
         kbr = KBaseReport(self.callback_url, service_ver='dev')
         report = ''
         report += "cmdstring: " + str(cmdstring) + " stdout: " + str(stdout) + " stderr: " + str(stderr)
+
+        print "wsName "+str(wsName)
 
         report_data = {'message': report,
              'objects_created': None,
