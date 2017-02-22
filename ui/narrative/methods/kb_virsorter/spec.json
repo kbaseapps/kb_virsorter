@@ -39,12 +39,6 @@
 					"input_parameter": "assembly_ref",
 					"target_property": "assembly_ref"
 				}
-			],
-			"output_mapping": [
-				{
-					"service_method_output_path": [0],
-					"target_property": "output"
-				}
 			]
 		}
 	},
