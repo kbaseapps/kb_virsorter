@@ -36,12 +36,8 @@
 					"target_property": "ws_name"
 				},
 				{
-					"input_parameter": "assembly_ref",
+					"input_parameter": "assembly",
 					"target_property": "assembly_ref"
-				},
-				{
-					"input_parameter": "genome_ref",
-					"target_property": "genome_ref"
 				}
 			],
 			"output_mapping": [
