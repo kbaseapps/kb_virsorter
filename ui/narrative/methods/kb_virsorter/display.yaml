@@ -21,16 +21,16 @@ suggestions:
 		related:
 			[]
 		next:
-			[annotate_contigset]
+			[]
 
 #
 # Configure the display and description of parameters
 #
 parameters :
-	genome :
+	assembly :
 		ui-name : |
-			Genome
+			Assembly
 		short-hint : |
-			Genome
+			Assembly
 		long-hint : |
-			Genome
+			Assembly
