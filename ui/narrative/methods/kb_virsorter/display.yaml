@@ -1,0 +1,36 @@
+#
+# define display information
+#
+name: VirSorter
+tooltip: |
+	VirSorter
+screenshots: []
+
+icon: icon.png
+
+#
+# define a set of similar methods that might be useful to the user
+#
+suggestions:
+	apps:
+		related:
+			[]
+		next:
+			[]
+	methods:
+		related:
+			[]
+		next:
+			[annotate_contigset]
+
+#
+# Configure the display and description of parameters
+#
+parameters :
+	genome :
+		ui-name : |
+			Genome
+		short-hint : |
+			Genome
+		long-hint : |
+			Genome

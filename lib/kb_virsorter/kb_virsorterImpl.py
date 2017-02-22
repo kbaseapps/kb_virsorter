@@ -76,13 +76,10 @@ This module wraps the virsorter pipeline.
 
         input_fasta_file = au.get_assembly_as_fasta(param)#{'ref': assembly_input_ref})
 
+        #just_input_fasta_file = os.path.basename(input_fasta_file['path'])
+        #print "input_fasta_file "+ str(input_fasta_file['path'])
+        args = ["wrapper_phage_contigs_sorter_iPlant.pl ", "--db 2 ","--fna ", input_fasta_file['path']," --wdir ","/kb/module/work/tmp"]
 
-        print "input_fasta_file "+ str(input_fasta_file['path'])
-        args = ["wrapper_phage_contigs_sorter_iPlant.pl ", "--db 2 ","--fna ", str(input_fasta_file['path'])," --wdir ","/kb/module/work"]
-
-
-
-        print type(args)
         print str(args)
 
         cmdstring = "".join(args)

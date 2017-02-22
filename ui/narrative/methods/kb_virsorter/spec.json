@@ -1,0 +1,69 @@
+{
+	"ver": "0.0.1",
+	
+	"authors": [
+		"marcin"
+	],
+	"contact": "help@kbase.us",
+	"visible": true,
+	"categories": ["active"],
+	"widgets": {
+		"input": null,
+		"output": null
+	},
+	"parameters": [
+		{
+			"id": "read_type",
+			"optional": false,
+			"advanced": false,
+			"allow_multiple": false,
+			"default_values": [ "PE" ],
+			"field_type": "dropdown",
+			"dropdown_options": {
+				"options": [
+					{
+						"value": "PE",
+						"display": "Paired End",
+						"id": "PE",
+						"ui-name": "PE"
+					},
+					{
+						"value": "SE",
+						"display": "Single End",
+						"id": "SE",
+						"ui-name": "SE"
+					}
+				]
+			}
+		}
+	],
+	"behavior": {
+		"service-mapping": {
+			"url": "",
+			"name": "VirSorter",
+			"method": "VirSorter",
+			"input_mapping": [
+				{
+					"narrative_system_variable": "workspace",
+					"target_property": "ws_name"
+				},
+				{
+					"input_parameter": "assembly_ref",
+					"target_property": "assembly_ref"
+				},
+				{
+					"input_parameter": "genome_ref",
+					"target_property": "genome_ref"
+				},
+
+			],
+			"output_mapping": [
+				{
+					"service_method_output_path": [0],
+					"target_property": "output"
+				}
+			]
+		}
+	},
+	"job_id_output_field": "docker"
+}

@@ -68,6 +68,7 @@ clean:
 
 ref-data:
 	pwd
+	mkdir /kb/module/tmp
 	mkdir /kb/module/virsorter_run
 	curl -X GET https://ci.kbase.us/services/shock-api/node/ab30145e-082a-4844-a2dc-bfb744b5b180?download_raw > /data/PFAM_27.tar.gz
 	tar -zxvf /data/PFAM_27.tar.gz -C /data
