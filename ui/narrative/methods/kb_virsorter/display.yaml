@@ -36,5 +36,6 @@ parameters :
 			Assembly
 
 description : |
-
-This is a KBase wrapper for the VirSorter pipeline designed to  identify viral sequences in assemblies.
+	<p>
+	This is a KBase wrapper for the VirSorter pipeline designed to  identify viral sequences in assemblies.
+	</p>
