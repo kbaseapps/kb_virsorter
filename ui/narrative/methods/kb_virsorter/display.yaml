@@ -34,3 +34,7 @@ parameters :
 			Assembly
 		long-hint : |
 			Assembly
+
+description : |
+
+This is a KBase wrapper for the VirSorter pipeline designed to  identify viral sequences in assemblies.
