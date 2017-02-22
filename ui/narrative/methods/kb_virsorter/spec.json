@@ -13,7 +13,7 @@
 	},
 	"parameters": [
 		{
-			"id": "Assembly",
+			"id": "assembly",
 			"optional": false,
 			"advanced": false,
 			"allow_multiple": false,
