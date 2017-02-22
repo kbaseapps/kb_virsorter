@@ -27,7 +27,7 @@ suggestions:
 # Configure the display and description of parameters
 #
 parameters :
-	assembly :
+	assembly_ref :
 		ui-name : |
 			Assembly
 		short-hint : |
