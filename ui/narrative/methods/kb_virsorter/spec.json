@@ -13,7 +13,7 @@
 	},
 	"parameters": [
 		{
-			"id": "assembly",
+			"id": "assembly_ref",
 			"optional": false,
 			"advanced": false,
 			"allow_multiple": false,
@@ -36,7 +36,7 @@
 					"target_property": "ws_name"
 				},
 				{
-					"input_parameter": "assembly",
+					"input_parameter": "assembly_ref",
 					"target_property": "assembly_ref"
 				}
 			],
