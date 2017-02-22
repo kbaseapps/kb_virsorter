@@ -13,7 +13,7 @@
 	},
 	"parameters": [
 		{
-			"id": "genome",
+			"id": "Assembly",
 			"optional": false,
 			"advanced": false,
 			"allow_multiple": false,
