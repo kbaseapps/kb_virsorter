@@ -45,6 +45,7 @@
                     			"service_method_output_path": [0,"report_name"],
                     			"target_property": "report_name"
                 		}
+			]	
 		}
 	},
 	"job_id_output_field": "docker"
