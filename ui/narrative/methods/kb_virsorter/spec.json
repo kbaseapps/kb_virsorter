@@ -36,7 +36,8 @@
 				},
 				{
 					"input_parameter": "assembly_ref",
-					"target_property": "assembly_ref"
+					"target_property": "assembly_ref",
+					 "target_type_transform": "resolved-ref"
 				}
 			],
 			"output_mapping": [
