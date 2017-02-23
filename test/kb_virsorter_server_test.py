@@ -197,8 +197,7 @@ class kb_virsorterTest(unittest.TestCase):
         #testresult = [
         #    {'blah': 'blah', 'bleh': 'bleh'}]
 
-        testresult = [{'report_ref': result['report_ref'], 'report_name': result['report_name']},
-{'blah': 'blah', 'bleh': 'bleh'}]
+        testresult = [{'report_ref': result['report_ref'], 'report_name': result['report_name']}]
     
         self.assertEqual(sorted(result), sorted(testresult))
 
