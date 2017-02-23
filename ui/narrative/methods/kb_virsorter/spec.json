@@ -20,8 +20,8 @@
 			"default_values": [ "" ],
 			"field_type": "text",
 			"text_options" : {
-                        "valid_ws_types" : [ "KBaseGenomeAnnotations.Assembly" ],
-                        "is_output_name":true
+				"valid_ws_types" : [ "KBaseGenomeAnnotations.Assembly" ],
+				"is_output_name":true
 			}
 		}
 	],
@@ -44,11 +44,11 @@
 				{
 					"service_method_output_path": [0,"report_name"],
 					"target_property": "report_name"
-                		},
-                		{
-                    			"service_method_output_path": [0,"report_ref"],
-                    			"target_property": "report_ref"
-                		}
+				},
+				{
+							"service_method_output_path": [0,"report_ref"],
+							"target_property": "report_ref"
+				}
 			]
 		}
 	},
