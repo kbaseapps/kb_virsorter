@@ -27,7 +27,7 @@
 	"behavior": {
 		"service-mapping": {
 			"url": "",
-			"name": "VirSorter",
+			"name": "kb_virsorter",
 			"method": "run_virsorter",
 			"input_mapping": [
 				{
