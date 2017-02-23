@@ -32,19 +32,24 @@
 			"method": "run_virsorter",
 			"input_mapping": [
 				{
-					"narrative_system_variable": "workspace",
-					"target_property": "ws_name"
-				},
-				{
 					"input_parameter": "assembly_ref",
 					"target_property": "assembly_ref"
-				}
+				},
+				{       
+                                        "input_parameter": "genome_ref",
+                                        "target_property": "genome_ref"
+                                }
+
 			],
 			"output_mapping": [
 				{
-					"service_method_output_path": [0],
-					"target_property": "output"
-				}
+					"service_method_output_path": [0,"report_name"],
+					"target_property": "report_name"
+                		},
+                		{
+                    			"service_method_output_path": [0,"report_ref"],
+                    			"target_property": "report_ref"
+                		},
 			]
 		}
 	},
