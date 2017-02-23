@@ -31,6 +31,10 @@
 			"method": "run_virsorter",
 			"input_mapping": [
 				{
+					"narrative_system_variable": "workspace",
+					"target_property": "input_ws"
+				},
+				{
 					"input_parameter": "assembly_ref",
 					"target_property": "assembly_ref"
 				}

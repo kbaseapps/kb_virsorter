@@ -44,7 +44,7 @@ This module wraps the virsorter pipeline.
     # Class variables and functions can be defined in this block
  
  
-    def do_assembly(self, assemblyRef, file_path, wsName, wsClient):
+    def do_assembly(self, assemblyRef, wsName):
         #try:
         #    assembly = wsClient.get_objects2({'objects': [{'ref': assembly_ref}]})
         #except:
@@ -259,7 +259,7 @@ This module wraps the virsorter pipeline.
         os.mkdir(file_path)
         
         if assemblyRef:
-            report_name, report_ref = self.do_assembly(assemblyRef, file_path, wsName, wsClient)
+            report_name, report_ref = self.do_assembly(assemblyRef, wsName)
         #elif genomeRef:
         #    report_name, report_ref = self.do_genome(genomeRef, file_path, wsName, wsClient)
 

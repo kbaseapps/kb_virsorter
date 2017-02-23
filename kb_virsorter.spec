@@ -7,6 +7,7 @@ module kb_virsorter {
 
 
     typedef structure {
+	string ws_name;
         string assembly_ref;
     } VirsorterParams;
 
