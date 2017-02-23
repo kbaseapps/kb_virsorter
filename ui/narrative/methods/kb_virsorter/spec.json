@@ -32,7 +32,7 @@
 			"input_mapping": [
 				{
 					"narrative_system_variable": "workspace",
-					"target_property": "input_ws"
+					"target_property": "ws_name"
 				},
 				{
 					"input_parameter": "assembly_ref",
