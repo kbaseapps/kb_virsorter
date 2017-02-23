@@ -8,7 +8,6 @@ module kb_virsorter {
 
     typedef structure {
         string assembly_ref;
-        string genome_ref;
     } VirsorterParams;
 
     typedef structure {

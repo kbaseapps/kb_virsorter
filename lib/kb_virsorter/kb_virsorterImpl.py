@@ -66,10 +66,10 @@ This module wraps the virsorter pipeline.
         #TODO set output file name
         print "SDK_CALLBACK_URL "+os.environ['SDK_CALLBACK_URL']
         au = AssemblyUtil(os.environ['SDK_CALLBACK_URL'])
-        assembly_input_ref = "16589/2/1"
-        filename = "test.fasta"
-        obj_name = "EcoliMG1655.f"
-        wsname = "example_assembly"
+        #assembly_input_ref = "16589/2/1"
+        #filename = "test.fasta"
+        #obj_name = "EcoliMG1655.f"
+        #wsname = "example_assembly"
 
         param = dict()
         param['ref'] = assemblyRef#assembly_input_ref
@@ -243,8 +243,8 @@ This module wraps the virsorter pipeline.
             raise ValueError('Parameter assembly_ref or genome_ref is not set in input arguments')
         elif 'assembly_ref' in params:
             assemblyRef = params['assembly_ref']
-        elif 'genome_ref' in params:
-            genomeRef = params['genome_ref']
+        #elif 'genome_ref' in params:
+        #    genomeRef = params['genome_ref']
 
         if 'ws_name' not in params:
             raise ValueError('Parameter ws_name is not set in input arguments')
@@ -260,8 +260,8 @@ This module wraps the virsorter pipeline.
         
         if assemblyRef:
             report_name, report_ref = self.do_assembly(assemblyRef, file_path, wsName, wsClient)
-        elif genomeRef:
-            report_name, report_ref = self.do_genome(genomeRef, file_path, wsName, wsClient)
+        #elif genomeRef:
+        #    report_name, report_ref = self.do_genome(genomeRef, file_path, wsName, wsClient)
 
         output = {'report_name': report_name,
                   'report_ref': report_ref
