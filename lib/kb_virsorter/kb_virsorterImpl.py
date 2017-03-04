@@ -78,7 +78,14 @@ This module wraps the virsorter pipeline.
 
         #just_input_fasta_file = os.path.basename(input_fasta_file['path'])
         #print "input_fasta_file "+ str(input_fasta_file['path'])
-        args = ["wrapper_phage_contigs_sorter_iPlant.pl ", "--db 2 ","--fna ", input_fasta_file['path']," --wdir ","/kb/module/work/tmp"]
+
+        newtmp = "/kb/module/work/tmp/tmp_"+self.create_random_string()
+        os.mkdir(newtmp)
+
+        newfasta = newtmp +"/"+os.path.basename(input_fasta_file['path'])
+        os.rename(input_fasta_file['path'], newfasta)
+
+        args = ["wrapper_phage_contigs_sorter_iPlant.pl ", "--db 2 ","--fna ", newfasta," --wdir ",newtmp]
 
         print str(args)
 
@@ -121,6 +128,10 @@ This module wraps the virsorter pipeline.
         report = ''
         report += "cmdstring: " + str(cmdstring) + " stdout: " + str(stdout) + " stderr: " + str(stderr)
 
+        virout = newtmp+"/"+"VirSorter_global_phage_signal.csv"
+        with open(virout, 'r') as myfile:
+            data = myfile.read().replace('\n', '')
+
         print "wsName "+str(wsName)
 
         report_data = {'message': report,
@@ -147,16 +158,11 @@ This module wraps the virsorter pipeline.
         return reportName, reportRef
 
 
-        # END filter_contigs
+    def create_random_string(self):
+        N = 20
+        return ''.join(
+            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(N))
 
-        # At some point might do deeper type checking...
-        #if not isinstance(output, dict):
-        #    raise ValueError('Method filter_contigs return value ' +
-        #                     'output is not type dict as required.')
-        # return the results
-        #return [output]
-
-        
     def do_genome(self, genomeRef, file_path, wsClient):
         try:
             genome = wsClient.get_objects2({'objects': [{'ref': genomeRef}]})['data'][0]

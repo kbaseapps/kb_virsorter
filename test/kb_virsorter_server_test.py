@@ -21,8 +21,11 @@ from kb_virsorter.kb_virsorterImpl import kb_virsorter
 from kb_virsorter.kb_virsorterServer import MethodContext
 from ReadsUtils.ReadsUtilsClient import ReadsUtils
 from DataFileUtil.DataFileUtilClient import DataFileUtil
+from AssemblyUtil.AssemblyUtilClient import AssemblyUtil
 from Workspace.WorkspaceClient import Workspace as workspaceService
 #from biokbase.workspace.client import Workspace as workspaceService
+
+#import trns_transform_FASTA_DNA_Assembly_to_KBaseGenomeAnnotations_Assembly as uploader
 
 class kb_virsorterTest(unittest.TestCase):
 
@@ -168,7 +171,7 @@ class kb_virsorterTest(unittest.TestCase):
             random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(N))
 
     def test_virsorter_ok(self):
-        #self.upload_assembly()
+        self.upload_assembly()
 
 
         if not self.testwsname:
@@ -176,18 +179,18 @@ class kb_virsorterTest(unittest.TestCase):
 
         print "upload_reads self.testwsname[0] " + self.testwsname[0]
 
-        try:
-            ret = self.wsClient.create_workspace({'workspace': self.testwsname[0]})  # test_ws_name
-        except Exception as e:
-            # print "ERROR"
-            # print(type(e))
-            # print(e.args)
-            print(e)
-            pass
+        #try:
+        #    ret = self.wsClient.create_workspace({'workspace': self.testwsname[0]})  # test_ws_name
+        #except Exception as e:
+        #    # print "ERROR"
+        #    # print(type(e))
+        #    # print(e.args)
+        #    print(e)
+        #    pass
 
         print "self.testwsname "+ str(self.testwsname)
         params = {}
-        params['assembly_ref'] = "16589/2/1"#""#'16589/2/1'#self.testobjref
+        params['assembly_ref'] =  str(self.testobjref[0])#str(self.testwsname[0])+"/"+ #"16589/2/1"#""#'16589/2/1'#self.testobjref
         params['ws_name'] = self.testwsname[0]
 
         result = self.getImpl().run_virsorter(self.getContext(), params)
@@ -208,13 +211,15 @@ class kb_virsorterTest(unittest.TestCase):
         if not self.testobjref:
             print "upload_assembly start"
     
-            indata = 'U00096.2.fa'
+            indata = 'U00096.2_first_10.fa'
             ftarget = os.path.join(self.cfg['scratch'], indata)#self.scratch, indata)
             print "ftarget " + ftarget
             ret = shutil.copy('../test_data/' + indata, ftarget)
     
-            self.readsUtilClient = ReadsUtils(os.environ['SDK_CALLBACK_URL'])
-    
+            #self.readsUtilClient = ReadsUtils(os.environ['SDK_CALLBACK_URL'])
+
+            self.assemblyUtilClient = AssemblyUtil(os.environ['SDK_CALLBACK_URL'])
+
             if not self.testwsname:
                 self.testwsname.append(self.create_random_string())
     
@@ -232,15 +237,16 @@ class kb_virsorterTest(unittest.TestCase):
             try:
                 print "attempt upload"
                 print "ftarget " + ftarget
-                ref = self.readsUtilClient.upload_assembly(
+                ref = self.assemblyUtilClient.save_assembly_from_fasta(
                     {
-                     'wsname': self.testwsname[0],
-                     'name': 'ecolik12'})
+                     'workspace_name': self.testwsname[0],
+                     'assembly_name': 'Ecolik12MG1655',
+                     'file': {'path': ftarget}})
         
                 print "upload_assembly"
                 print ref
                 #self.testobjref = []
-                self.testobjref.append(self.testwsname[0] + '/ecolik12')
+                self.testobjref.append(self.testwsname[0] + '/Ecolik12MG1655/1')
                 #self.testobjdata = []
                 self.testobjdata.append(self.dfu.get_objects(
                     {'object_refs': [self.testobjref[0]]}))
@@ -253,4 +259,5 @@ class kb_virsorterTest(unittest.TestCase):
                 pass
     
             print "self.testobjref[0]"
+            print self.testobjref
             print self.testobjref[0]
