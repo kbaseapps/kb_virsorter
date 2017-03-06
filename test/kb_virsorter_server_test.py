@@ -211,7 +211,7 @@ class kb_virsorterTest(unittest.TestCase):
         if not self.testobjref:
             print "upload_assembly start"
     
-            indata = 'U00096.2_first_10.fa'
+            indata = 'U00096.2_first10.fa'
             ftarget = os.path.join(self.cfg['scratch'], indata)#self.scratch, indata)
             print "ftarget " + ftarget
             ret = shutil.copy('../test_data/' + indata, ftarget)

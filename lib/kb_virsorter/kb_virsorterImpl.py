@@ -8,6 +8,8 @@ import subprocess
 import shutil
 import traceback
 import uuid
+import random
+import string
 from pprint import pprint, pformat
 
 from KBaseReport.KBaseReportClient import KBaseReport
@@ -128,7 +130,7 @@ This module wraps the virsorter pipeline.
         report = ''
         report += "cmdstring: " + str(cmdstring) + " stdout: " + str(stdout) + " stderr: " + str(stderr)
 
-        virout = newtmp+"/"+"VirSorter_global_phage_signal.csv"
+        virout = newtmp+"/"+"VIRSorter_global-phage-signal.csv"
         with open(virout, 'r') as myfile:
             data = myfile.read().replace('\n', '')
 
