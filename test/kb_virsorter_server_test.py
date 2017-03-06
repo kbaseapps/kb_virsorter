@@ -58,7 +58,7 @@ class kb_virsorterTest(unittest.TestCase):
         cls.serviceImpl = kb_virsorter(cls.cfg)
 
         cls.testobjref = []
-        cls.testobjdata = []
+        #cls.testobjdata = []
         cls.testwsname = []
 
     @classmethod
@@ -207,11 +207,11 @@ class kb_virsorterTest(unittest.TestCase):
 
 
     def upload_assembly(self):
-
         if not self.testobjref:
+
             print "upload_assembly start"
     
-            indata = 'U00096.2_first10.fa'
+            indata = 'U00096.2.fa'#_first1000.
             ftarget = os.path.join(self.cfg['scratch'], indata)#self.scratch, indata)
             print "ftarget " + ftarget
             ret = shutil.copy('../test_data/' + indata, ftarget)
@@ -248,11 +248,10 @@ class kb_virsorterTest(unittest.TestCase):
                 #self.testobjref = []
                 self.testobjref.append(self.testwsname[0] + '/Ecolik12MG1655/1')
                 #self.testobjdata = []
-                self.testobjdata.append(self.dfu.get_objects(
-                    {'object_refs': [self.testobjref[0]]}))
+                #self.testobjdata.append(self.dfu.get_objects(
+                #    {'object_refs': [self.testobjref[0]]}))
         
-                print "self.testobjdata[0]"
-                print self.testobjdata[0]
+                ##print self.testobjdata[0]
     
             except Exception as e:
                 print e
