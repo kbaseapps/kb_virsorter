@@ -6,7 +6,7 @@ tooltip: |
 	VirSorter
 screenshots: []
 
-icon: icon.png
+icon: virsorter-red.png
 
 #
 # define a set of similar methods that might be useful to the user
@@ -37,5 +37,13 @@ parameters :
 
 description : |
 	<p>
-	This is a KBase wrapper for the VirSorter pipeline designed to identify viral sequences in genome assemblies.
+	This is a KBase wrapper for the VirSorter pipeline designed to identify viral and prophage sequences in genome assemblies.
 	</p>
+
+
+publications :
+    -
+        display-text: |
+            S. Roux, F. Enault, B. L. Hurwitz, M. B. Sullivan
+        link: https://peerj.com/articles/985/
+        pmid: 26038737

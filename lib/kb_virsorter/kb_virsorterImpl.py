@@ -83,9 +83,9 @@ This module wraps the virsorter pipeline.
 
         newtmp = "/kb/module/work/tmp/tmp_"+self.create_random_string()
         os.mkdir(newtmp)
-        os.mkdir(newtmp+"/fasta")
+        os.mkdir(newtmp+"/input")
 
-        newfasta = newtmp +"/fasta/"+os.path.basename(input_fasta_file['path'])
+        newfasta = newtmp +"/input/"+os.path.basename(input_fasta_file['path'])
         print "newfasta "+newfasta
 
         os.rename(input_fasta_file['path'], newfasta)

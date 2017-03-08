@@ -3,4 +3,4 @@
 # kb_virsorter
 ---
 
-This is the basic readme for this module. This module contains an example method that counts the contigs in a contig set.
+This module wraps the VirSorter app which identifies viral and prophage sequences in genome assemblies.
