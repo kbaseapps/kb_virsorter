@@ -139,7 +139,8 @@ This module wraps the virsorter pipeline.
 
         print "wsName "+str(wsName)
 
-        report = report +"/n/n"+data
+        data = data.replace(",", "\t")
+        report = report +"\n\n***** VirSorter output *****\n"+data
         report_data = {'message': report,
              'objects_created': None,
              'direct_html_link_index': None,
